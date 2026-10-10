@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="robots" content="noindex, nofollow">
+    <title>agntid.ai - Customer Hosted Runtime</title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* Default dark theme (matches portal .dark) */
+        :root, [data-theme="dark"] {
+            --bg-primary: #0f172a;
+            --bg-card: #1e293b;
+            --bg-card-hover: #263347;
+            --bg-input: #0f172a;
+            --border: #334155;
+            --border-focus: #3b82f6;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --success: #22c55e;
+            --success-bg: rgba(34,197,94,0.1);
+            --success-border: rgba(34,197,94,0.3);
+            --warning: #f59e0b;
+            --warning-bg: rgba(245,158,11,0.1);
+            --warning-border: rgba(245,158,11,0.3);
+            --error: #ef4444;
+            --error-bg: rgba(239,68,68,0.1);
+            --error-border: rgba(239,68,68,0.3);
+            --radius: 0.625rem;
+            --radius-lg: 12px;
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+        }
+        /* Light theme (matches portal :root) */
+        [data-theme="light"] {
+            --bg-primary: #ffffff;
+            --bg-card: #ffffff;
+            --bg-card-hover: #f1f5f9;
+            --bg-input: #ffffff;
+            --border: #e2e8f0;
+            --border-focus: #3b82f6;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --success: #22c55e;
+            --success-bg: rgba(34,197,94,0.1);
+            --success-border: rgba(34,197,94,0.3);
+            --warning: #f59e0b;
+            --warning-bg: rgba(245,158,11,0.1);
+            --warning-border: rgba(245,158,11,0.3);
+            --error: #ef4444;
+            --error-bg: rgba(239,68,68,0.1);
+            --error-border: rgba(239,68,68,0.3);
+        }
+        .theme-toggle {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 18px;
+            padding: 6px 10px;
+            margin-left: 8px;
+        }
+        .theme-toggle:hover { color: var(--accent); border-color: var(--accent); }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: var(--font-sans);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 24px 20px;
+        }
+
+        /* Header / Branding */
+        .brand-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 24px;
+        }
+        .brand-logo { width: 36px; height: 36px; border-radius: 8px; object-fit: contain; }
+        .brand-logo-icon { flex-shrink: 0; }
+        .brand-title { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; }
+        .brand-title span { color: var(--text-muted); font-weight: 400; font-size: 14px; margin-left: 8px; }
+        .brand-badge {
+            margin-left: auto;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: var(--bg-card);
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+        }
+
+        /* Section cards */
+        .section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 20px 24px;
+            margin-bottom: 16px;
+        }
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .section-icon {
+            width: 32px; height: 32px;
+            border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+        .section-title { font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-secondary); }
+
+        /* Status banner */
+        .status-banner {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            border-radius: var(--radius);
+            margin-bottom: 12px;
+        }
+        .status-dot {
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .status-dot.pulse { animation: pulse 2s ease-in-out infinite; }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        .status-connected { background: var(--success-bg); border: 1px solid var(--success-border); }
+        .status-connected .status-dot { background: var(--success); box-shadow: 0 0 8px var(--success); }
+        .status-disconnected { background: var(--error-bg); border: 1px solid var(--error-border); }
+        .status-disconnected .status-dot { background: var(--error); box-shadow: 0 0 8px var(--error); }
+        .status-degraded { background: var(--warning-bg); border: 1px solid var(--warning-border); }
+        .status-degraded .status-dot { background: var(--warning); box-shadow: 0 0 8px var(--warning); }
+        .status-label { font-size: 13px; font-weight: 600; }
+        .status-connected .status-label { color: var(--success); }
+        .status-disconnected .status-label { color: var(--error); }
+        .status-degraded .status-label { color: var(--warning); }
+
+        /* Key-value grid */
+        .kv-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+        .kv-item {
+            padding: 12px 16px;
+            background: var(--bg-primary);
+            border-radius: var(--radius);
+            border: 1px solid transparent;
+        }
+        .kv-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 4px; }
+        .kv-value { font-size: 14px; font-weight: 500; color: var(--text-primary); font-family: var(--font-mono); word-break: break-all; }
+        .kv-value.success { color: var(--success); }
+        .kv-value.warning { color: var(--warning); }
+        .kv-value.error { color: var(--error); }
+
+        /* MCP server table */
+        .mcp-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .mcp-table th {
+            text-align: left;
+            padding: 8px 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+        }
+        .mcp-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid rgba(51,65,85,0.5);
+            font-family: var(--font-mono);
+            color: var(--text-primary);
+        }
+        .mcp-table tr:last-child td { border-bottom: none; }
+        .mcp-table .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .badge-healthy { background: var(--success-bg); color: var(--success); border: 1px solid var(--success-border); }
+        .badge-unhealthy { background: var(--error-bg); color: var(--error); border: 1px solid var(--error-border); }
+        .mcp-summary {
+            display: flex;
+            gap: 16px;
+            padding: 10px 12px;
+            background: var(--bg-primary);
+            border-radius: var(--radius);
+            margin-top: 8px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* Audit event list */
+        .event-list { max-height: 300px; overflow-y: auto; }
+        .event-item {
+            display: grid;
+            grid-template-columns: 80px 70px 1fr;
+            gap: 8px;
+            padding: 8px 12px;
+            font-size: 12px;
+            border-bottom: 1px solid rgba(51,65,85,0.3);
+            align-items: center;
+        }
+        .event-item:last-child { border-bottom: none; }
+        .event-time { font-family: var(--font-mono); color: var(--text-muted); }
+        .event-severity { font-weight: 600; font-size: 11px; text-transform: uppercase; }
+        .event-severity.info { color: var(--accent); }
+        .event-severity.warning { color: var(--warning); }
+        .event-severity.error { color: var(--error); }
+        .event-severity.critical { color: #f87171; }
+        .event-message { color: var(--text-secondary); }
+
+        /* Actions */
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 10px;
+        }
+        .action-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            color: var(--text-primary);
+            font-size: 13px;
+            font-weight: 500;
+            font-family: var(--font-sans);
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .action-btn:hover { background: var(--bg-card-hover); border-color: var(--accent); color: var(--accent); }
+        .action-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .action-btn:disabled:hover { background: var(--bg-primary); border-color: var(--border); color: var(--text-primary); }
+        .action-result {
+            margin-top: 8px;
+            padding: 8px 12px;
+            border-radius: var(--radius);
+            font-size: 12px;
+            display: none;
+        }
+        .action-result.show { display: block; }
+        .action-result.success { background: var(--success-bg); color: var(--success); border: 1px solid var(--success-border); }
+        .action-result.error { background: var(--error-bg); color: var(--error); border: 1px solid var(--error-border); }
+        .action-result.info { background: rgba(59,130,246,0.1); color: var(--accent); border: 1px solid rgba(59,130,246,0.3); }
+
+        /* Bootstrap form (unprovisioned state) */
+        .bootstrap-card {
+            max-width: 480px;
+            margin: 80px auto 0;
+            text-align: center;
+        }
+        .bootstrap-card .brand-logo { width: 56px; height: 56px; margin: 0 auto 16px; }
+        .bootstrap-card h2 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+        .bootstrap-card .subtitle { font-size: 14px; color: var(--text-muted); margin-bottom: 24px; }
+        .bootstrap-form { text-align: left; }
+        .bootstrap-form label { display: block; font-size: 13px; font-weight: 500; color: var(--text-secondary); margin-bottom: 6px; }
+        .bootstrap-form input {
+            width: 100%;
+            padding: 10px 14px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            color: var(--text-primary);
+            font-family: var(--font-mono);
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.15s;
+        }
+        .bootstrap-form input:focus { border-color: var(--border-focus); }
+        .bootstrap-form input.input-error { border-color: var(--error); }
+        .bootstrap-form .hint { font-size: 11px; color: var(--text-muted); margin-top: 6px; }
+        .bootstrap-form .error-text { font-size: 12px; color: var(--error); margin-top: 6px; display: none; }
+        .bootstrap-form .error-text.visible { display: block; }
+        .bootstrap-btn {
+            width: 100%;
+            padding: 12px;
+            margin-top: 16px;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 14px;
+            font-weight: 600;
+            font-family: var(--font-sans);
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .bootstrap-btn:hover:not(:disabled) { background: var(--accent-hover); }
+        .bootstrap-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .bootstrap-loading { display: none; margin-top: 12px; font-size: 13px; color: var(--text-muted); }
+        .bootstrap-loading.visible { display: flex; align-items: center; gap: 8px; justify-content: center; }
+        .spinner {
+            width: 14px; height: 14px;
+            border: 2px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .bootstrap-hardening {
+            margin-top: 20px;
+            padding: 16px;
+            background: var(--bg-primary);
+            border-radius: var(--radius);
+            text-align: left;
+        }
+        .bootstrap-hardening h4 { font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 8px; }
+        .bootstrap-hardening ul { list-style: none; }
+        .bootstrap-hardening li { font-size: 12px; color: var(--text-secondary); padding: 3px 0; }
+        .bootstrap-hardening li::before { content: "✓ "; color: var(--success); font-weight: 600; }
+
+        /* Connected state view */
+        #unprovisioned-view, #connected-view { display: none; }
+        #unprovisioned-view.active, #connected-view.active { display: block; }
+
+        .empty-state { text-align: center; color: var(--text-muted); padding: 20px; font-size: 13px; font-style: italic; }
+
+        /* Footer */
+        .portal-footer {
+            margin-top: 32px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        .portal-footer .ws-status { display: flex; align-items: center; gap: 6px; }
+        .ws-dot { width: 6px; height: 6px; border-radius: 50%; }
+        .ws-dot.connected { background: var(--success); }
+        .ws-dot.disconnected { background: var(--error); }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .kv-grid { grid-template-columns: 1fr; }
+            .actions-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Brand Header (always visible) -->
+    <header class="brand-header">
+        <img id="brand-logo" class="brand-logo brand-logo-icon" src="/static/img/icon-dark.png" alt="AgentID" width="36" height="36">
+        <div>
+            <div class="brand-title">agntid.ai<span>Customer Hosted Runtime</span></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-left:auto;">
+            <button type="button" class="theme-toggle" id="theme-refresh" title="Refresh status" aria-label="Refresh" onclick="if(window.refreshStatus)window.refreshStatus()">&#8635;</button>
+            <button type="button" class="theme-toggle" id="theme-toggle" title="Toggle light/dark theme" aria-label="Toggle theme">&#9728;</button>
+            <div class="brand-badge" id="state-badge" title="Runtime state: Unprovisioned (not connected) or Operational (connected to control plane)">Initializing</div>
+        </div>
+    </header>
+
+    <!-- ============================================ -->
+    <!-- UNPROVISIONED STATE                          -->
+    <!-- ============================================ -->
+    <div id="unprovisioned-view">
+        <div class="bootstrap-card section">
+            <h2>Connect to agntid.ai Control Plane</h2>
+            <p class="subtitle">Enter your bootstrap token to establish a secure mTLS connection</p>
+
+            <div class="bootstrap-form" id="bootstrap-form">
+                <label for="bootstrap-token">Bootstrap Token</label>
+                <input type="password" id="bootstrap-token" placeholder="achr_bt_..." autocomplete="off" spellcheck="false" data-lpignore="true">
+                <p class="hint">Format: achr_bt_ followed by at least 32 characters</p>
+                <div class="error-text" id="token-error"></div>
+
+                <div class="bootstrap-loading" id="bootstrap-loading">
+                    <div class="spinner"></div>
+                    <span>Connecting to Control Plane...</span>
+                </div>
+
+                <button class="bootstrap-btn" id="connect-btn" disabled>Connect to Control Plane</button>
+            </div>
+
+            <div class="bootstrap-hardening">
+                <h4>Security Practices</h4>
+                <ul>
+                    <li>mTLS certificate provisioned on first connection</li>
+                    <li>Bootstrap token is single-use and time-limited</li>
+                    <li>All communication encrypted with TLS 1.3</li>
+                    <li>Token removed from memory after use</li>
+                    <li>No credentials stored in browser</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- CONNECTED STATE (Read-Only Operator View)    -->
+    <!-- ============================================ -->
+    <div id="connected-view">
+
+        <!-- 1. Connectivity Section -->
+        <div class="section" id="connectivity-section" title="Connection and mTLS status with the control plane">
+            <div class="section-header">
+                <div class="section-icon" style="background:rgba(59,130,246,0.15);color:var(--accent);">&#9679;</div>
+                <div class="section-title">Connectivity</div>
+            </div>
+            <div class="status-banner status-disconnected" id="status-banner" title="Overall connection status to the control plane">
+                <div class="status-dot pulse"></div>
+                <span class="status-label" id="status-label">Checking...</span>
+            </div>
+            <div class="kv-grid">
+                <div class="kv-item" title="Unique identifier for this runtime in the control plane"><div class="kv-label">Runtime ID</div><div class="kv-value" id="kv-runtime-id">—</div></div>
+                <div class="kv-item" title="Mutual TLS authentication status with the control plane"><div class="kv-label">mTLS Status</div><div class="kv-value" id="kv-mtls">—</div></div>
+                <div class="kv-item" title="Time since the last heartbeat sent to the control plane"><div class="kv-label">Last Heartbeat</div><div class="kv-value" id="kv-heartbeat">—</div></div>
+                <div class="kv-item" title="Time until the mTLS client certificate expires"><div class="kv-label">Certificate Expiry</div><div class="kv-value" id="kv-cert-expiry">—</div></div>
+                <div class="kv-item" title="Current lifecycle state (e.g. connected, syncing)"><div class="kv-label">Lifecycle State</div><div class="kv-value" id="kv-lifecycle">—</div></div>
+                <div class="kv-item" title="Model Context Protocol: mounted servers and tools"><div class="kv-label">MCP Status</div><div class="kv-value" id="kv-mcp-status">—</div></div>
+            </div>
+        </div>
+
+        <!-- 2. Enforcement Section -->
+        <div class="section" id="enforcement-section" title="Policy sync and enforcement state">
+            <div class="section-header">
+                <div class="section-icon" style="background:rgba(168,85,247,0.15);color:#a855f7;">&#9670;</div>
+                <div class="section-title">Policy Enforcement</div>
+            </div>
+            <div class="kv-grid">
+                <div class="kv-item" title="Result of the latest policy sync (success or error)"><div class="kv-label">Policy Sync</div><div class="kv-value" id="kv-policy-sync">—</div></div>
+                <div class="kv-item" title="Number of policies currently loaded from the control plane"><div class="kv-label">Policies Loaded</div><div class="kv-value" id="kv-policy-count">—</div></div>
+                <div class="kv-item" title="Version identifier of the loaded policy set"><div class="kv-label">Policy Version</div><div class="kv-value" id="kv-policy-version">—</div></div>
+                <div class="kv-item" title="When policies were last synced from the control plane"><div class="kv-label">Last Sync</div><div class="kv-value" id="kv-policy-last-sync">—</div></div>
+            </div>
+        </div>
+
+        <!-- 3. MCP Servers Section -->
+        <div class="section" id="mcp-section" title="MCP servers mounted and their tool counts">
+            <div class="section-header">
+                <div class="section-icon" style="background:rgba(34,197,94,0.15);color:var(--success);">&#9632;</div>
+                <div class="section-title">Mounted MCP Servers</div>
+            </div>
+            <div id="mcp-content">
+                <p class="empty-state">No MCP servers mounted</p>
+            </div>
+        </div>
+
+        <!-- 4. Observability Section -->
+        <div class="section" id="observability-section" title="Resource usage and recent audit events">
+            <div class="section-header">
+                <div class="section-icon" style="background:rgba(245,158,11,0.15);color:var(--warning);">&#9650;</div>
+                <div class="section-title">Observability</div>
+            </div>
+            <div class="kv-grid" style="margin-bottom:16px;">
+                <div class="kv-item" title="CPU usage of the runtime process"><div class="kv-label">CPU</div><div class="kv-value" id="kv-cpu">—</div></div>
+                <div class="kv-item" title="Memory usage of the runtime process"><div class="kv-label">Memory</div><div class="kv-value" id="kv-memory">—</div></div>
+                <div class="kv-item" title="How long the runtime has been running"><div class="kv-label">Uptime</div><div class="kv-value" id="kv-uptime">—</div></div>
+                <div class="kv-item" title="Number of audit events buffered and not yet sent"><div class="kv-label">Audit Queue</div><div class="kv-value" id="kv-audit-queue">—</div></div>
+            </div>
+            <div style="font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:8px;">Recent Events</div>
+            <div class="event-list" id="event-list">
+                <p class="empty-state">No events yet</p>
+            </div>
+        </div>
+
+        <!-- 5. Actions Section -->
+        <div class="section" id="actions-section" title="Manual actions you can trigger on the runtime">
+            <div class="section-header">
+                <div class="section-icon" style="background:rgba(239,68,68,0.15);color:var(--error);">&#9733;</div>
+                <div class="section-title">Actions</div>
+            </div>
+            <div class="actions-grid">
+                <button class="action-btn" id="btn-check-commands" title="Fetch and run any pending commands from the control plane" onclick="checkCommands()">Check Pending Commands</button>
+                <button class="action-btn" id="btn-health-report" title="Send a health report to the control plane" onclick="sendHealthReport()">Send Health Report</button>
+                <button class="action-btn" id="btn-sync-policies" title="Pull the latest policies from the control plane now" onclick="syncPolicies()">Sync Policies Now</button>
+                <button class="action-btn" id="btn-force-reconnect" title="Drop connection and reconnect to the control plane" onclick="forceReconnect()">Force Reconnect</button>
+                <button class="action-btn" id="btn-reload-mcp" title="Reload MCP server configuration from disk" onclick="reloadMcpConfig()">Reload MCP Config</button>
+                <button class="action-btn" id="btn-rotate-cert" title="Request a new mTLS client certificate from the control plane" onclick="rotateCertificate()">Rotate Certificate</button>
+            </div>
+            <div class="action-result" id="action-result"></div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="portal-footer">
+        <div>&copy; agntid.ai. All rights reserved.</div>
+        <div class="ws-status" id="ws-status" title="WebSocket connection to runtime for live updates">
+            <div class="ws-dot disconnected" id="ws-dot"></div>
+            <span id="ws-label">Live updates: Offline</span>
+        </div>
+    </footer>
+</div>
+
+<script>
+(function() {
+    'use strict';
+
+    // Theme (light/dark) – persisted in localStorage, fallback to prefers-color-scheme
+    var THEME_KEY = 'agntid_runtime_theme';
+    function applyTheme(theme) {
+        var root = document.documentElement;
+        root.setAttribute('data-theme', theme);
+        var logo = document.getElementById('brand-logo');
+        if (logo) logo.src = theme === 'light' ? '/static/img/icon-light.png' : '/static/img/icon-dark.png';
+        var btn = document.getElementById('theme-toggle');
+        if (btn) btn.textContent = theme === 'light' ? '\u263E' : '\u2600'; // moon / sun (U+2600 = ☀)
+    }
+    function getPreferredTheme() {
+        try {
+            var stored = localStorage.getItem(THEME_KEY);
+            if (stored === 'light' || stored === 'dark') return stored;
+        } catch (e) {}
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) return 'light';
+        return 'dark';
+    }
+    (function initTheme() {
+        var theme = getPreferredTheme();
+        applyTheme(theme);
+        var toggle = document.getElementById('theme-toggle');
+        if (toggle) {
+            toggle.addEventListener('click', function() {
+                var next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+                try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
+                applyTheme(next);
+            });
+        }
+    })();
+
+    // State (server-authoritative, never from localStorage)
+    var state = { view: 'loading', connected: false, runtimeId: null };
+    var pollTimer = null;
+    var ws = null;
+    var wsConnected = false;
+    var POLL_INTERVAL = 12000;
+
+    // DOM refs
+    var $unprov = document.getElementById('unprovisioned-view');
+    var $conn = document.getElementById('connected-view');
+    var $badge = document.getElementById('state-badge');
+    var $tokenInput = document.getElementById('bootstrap-token');
+    var $tokenError = document.getElementById('token-error');
+    var $connectBtn = document.getElementById('connect-btn');
+    var $loading = document.getElementById('bootstrap-loading');
+
+    function setView(view) {
+        state.view = view;
+        $unprov.classList.remove('active');
+        $conn.classList.remove('active');
+        if (view === 'unprovisioned') {
+            $unprov.classList.add('active');
+            $badge.textContent = 'Unprovisioned';
+            $badge.style.color = 'var(--warning)';
+            $badge.style.borderColor = 'var(--warning-border)';
+        } else if (view === 'connected') {
+            $conn.classList.add('active');
+            $badge.textContent = 'Operational';
+            $badge.style.color = 'var(--success)';
+            $badge.style.borderColor = 'var(--success-border)';
+        }
+    }
+
+    // Bootstrap token validation
+    function validateToken(val) {
+        var t = val.trim();
+        $tokenError.classList.remove('visible');
+        $tokenInput.classList.remove('input-error');
+        if (!t) { $connectBtn.disabled = true; return; }
+        if (!/^achr_bt_[A-Za-z0-9_\-]{32,}$/.test(t)) {
+            $tokenError.textContent = 'Invalid format. Must start with achr_bt_ followed by 32+ characters.';
+            $tokenError.classList.add('visible');
+            $tokenInput.classList.add('input-error');
+            $connectBtn.disabled = true;
+        } else {
+            $connectBtn.disabled = false;
+        }
+    }
+
+    $tokenInput.addEventListener('input', function(e) { validateToken(e.target.value); });
+
+    $connectBtn.addEventListener('click', function() { doBootstrap(); });
+    document.getElementById('bootstrap-form').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !$connectBtn.disabled) doBootstrap();
+    });
+
+    function doBootstrap() {
+        var token = $tokenInput.value.trim();
+        if (!token) return;
+        $connectBtn.disabled = true;
+        $loading.classList.add('visible');
+        $tokenError.classList.remove('visible');
+
+        fetch('/api/bootstrap/connect', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ bootstrapToken: token })
+        })
+        .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
+        .then(function(res) {
+            if (res.ok && res.data.success) {
+                // Remove token input from DOM entirely
+                var formEl = document.getElementById('bootstrap-form');
+                if (formEl) formEl.remove();
+                state.connected = true;
+                state.runtimeId = res.data.runtimeId || res.data.runtime_id;
+                setView('connected');
+                startPolling();
+                connectWebSocket();
+                fetchStatus();
+            } else {
+                var msg = res.data.error || 'Connection failed';
+                $tokenError.textContent = msg;
+                $tokenError.classList.add('visible');
+                $connectBtn.disabled = false;
+            }
+        })
+        .catch(function(err) {
+            $tokenError.textContent = 'Network error: ' + err.message;
+            $tokenError.classList.add('visible');
+            $connectBtn.disabled = false;
+        })
+        .finally(function() {
+            $loading.classList.remove('visible');
+        });
+    }
+
+    // Fetch status from server (source of truth)
+    function fetchStatus() {
+        fetch('/api/status')
+        .then(function(r) { return r.json(); })
+        .then(function(data) { applyStatus(data); })
+        .catch(function() {});
+    }
+
+    window.refreshStatus = function() {
+        fetchStatus();
+        if (state.view === 'connected') {
+            if (typeof fetchHealth === 'function') fetchHealth();
+            if (typeof fetchAuditEvents === 'function') fetchAuditEvents();
+        }
+    };
+
+    function clearKvStateStyles(ids) {
+        ids.forEach(function(id) {
+            var el = document.getElementById(id);
+            if (el) {
+                el.classList.remove('success', 'warning', 'error');
+                el.style.color = '';
+            }
+        });
+    }
+
+    function applyStatus(data) {
+        if (data.connected && data.runtime_id) {
+            if (state.view !== 'connected') {
+                setView('connected');
+                connectWebSocket();
+            }
+            state.connected = true;
+            state.runtimeId = data.runtime_id;
+
+            // Clear previous state colors so we don't show stale green/red
+            clearKvStateStyles(['kv-mtls', 'kv-lifecycle', 'kv-mcp-status', 'kv-cert-expiry', 'kv-policy-sync']);
+
+            // Connectivity
+            var banner = document.getElementById('status-banner');
+            var label = document.getElementById('status-label');
+            banner.className = 'status-banner status-connected';
+            label.textContent = 'Connected';
+
+            setText('kv-runtime-id', data.runtime_id);
+            setText('kv-mtls', 'Active');
+            document.getElementById('kv-mtls').classList.add('success');
+
+            // Lifecycle – color by state (connected/operational = green, degraded = warning)
+            if (data.lifecycle) {
+                var lifeState = (data.lifecycle.state || '').toLowerCase();
+                setText('kv-lifecycle', data.lifecycle.state || '—');
+                var lifeEl = document.getElementById('kv-lifecycle');
+                if (lifeEl) {
+                    if (lifeState === 'connected' || lifeState === 'operational' || lifeState === 'synced' || lifeState === 'ready') {
+                        lifeEl.classList.add('success');
+                    } else if (lifeState === 'degraded' || lifeState === 'warning' || lifeState === 'syncing') {
+                        lifeEl.style.color = 'var(--warning)';
+                    }
+                }
+                if (data.lifecycle.last_sync) {
+                    setText('kv-policy-last-sync', timeAgo(data.lifecycle.last_sync.timestamp));
+                }
+            }
+
+            // MCP
+            if (data.mcp && data.mcp.enabled) {
+                var toolCount = data.mcp.tool_count || 0;
+                setText('kv-mcp-status', 'Running (' + toolCount + ' tools)');
+                document.getElementById('kv-mcp-status').classList.add('success');
+                renderMcpServers(data.mcp.mounted_servers || [], toolCount, data.lifecycle);
+            } else {
+                setText('kv-mcp-status', 'Disabled');
+                document.getElementById('mcp-content').innerHTML = '<p class="empty-state">MCP not enabled</p>';
+            }
+
+            // Audit queue
+            setText('kv-audit-queue', (data.buffered_audit || 0) + ' pending');
+
+            // Certificate expiry
+            if (data.certificate_expires_at) {
+                var expDate = new Date(data.certificate_expires_at);
+                var daysLeft = Math.floor((expDate - Date.now()) / 86400000);
+                var expiryEl = document.getElementById('kv-cert-expiry');
+                setText('kv-cert-expiry', daysLeft + ' days');
+                if (daysLeft > 30) {
+                    expiryEl.classList.add('success');
+                } else if (daysLeft > 7) {
+                    expiryEl.style.color = 'var(--warning)';
+                } else {
+                    expiryEl.style.color = 'var(--error)';
+                }
+            }
+
+            // Policy info
+            if (data.policy_count !== undefined) {
+                setText('kv-policy-count', data.policy_count + ' loaded');
+            }
+            if (data.policy_version) {
+                setText('kv-policy-version', data.policy_version);
+            }
+            if (data.lifecycle && data.lifecycle.last_sync) {
+                var syncResult = data.lifecycle.last_sync.result || 'unknown';
+                var syncEl = document.getElementById('kv-policy-sync');
+                setText('kv-policy-sync', syncResult.charAt(0).toUpperCase() + syncResult.slice(1));
+                if (syncResult === 'success') {
+                    syncEl.classList.add('success');
+                } else {
+                    syncEl.style.color = 'var(--warning)';
+                }
+            }
+
+            // Uptime
+            if (data.uptime_seconds !== undefined) {
+                setText('kv-uptime', formatUptime(data.uptime_seconds));
+            }
+        } else {
+            if (state.view !== 'unprovisioned') {
+                setView('unprovisioned');
+            }
+        }
+    }
+
+    function setText(id, val) {
+        var el = document.getElementById(id);
+        if (el) el.textContent = val || '—';
+    }
+
+    function timeAgo(ts) {
+        if (!ts) return '—';
+        var diff = Math.floor((Date.now() - new Date(ts).getTime()) / 1000);
+        if (diff < 60) return diff + 's ago';
+        if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+        if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+        return Math.floor(diff / 86400) + 'd ago';
+    }
+
+    function formatUptime(seconds) {
+        if (seconds < 60) return seconds + 's';
+        if (seconds < 3600) return Math.floor(seconds / 60) + 'm ' + (seconds % 60) + 's';
+        var h = Math.floor(seconds / 3600);
+        var m = Math.floor((seconds % 3600) / 60);
+        if (h < 24) return h + 'h ' + m + 'm';
+        var d = Math.floor(h / 24);
+        return d + 'd ' + (h % 24) + 'h';
+    }
+
+    // Render MCP server table
+    function renderMcpServers(servers, totalTools, lifecycle) {
+        var container = document.getElementById('mcp-content');
+        if (!servers || servers.length === 0) {
+            container.innerHTML = '<p class="empty-state">No MCP servers mounted</p>';
+            return;
+        }
+        var toolsPerServer = {};
+        if (lifecycle && lifecycle.tools_per_server) {
+            toolsPerServer = lifecycle.tools_per_server;
+        }
+        var html = '<table style="width:100%;border-collapse:collapse;font-size:13px;">' +
+            '<thead><tr style="border-bottom:1px solid var(--border);">' +
+            '<th style="text-align:left;padding:8px 12px;color:var(--text-muted);font-weight:500;">Server</th>' +
+            '<th style="text-align:left;padding:8px 12px;color:var(--text-muted);font-weight:500;">Status</th>' +
+            '<th style="text-align:right;padding:8px 12px;color:var(--text-muted);font-weight:500;">Tools</th>' +
+            '</tr></thead><tbody>';
+        servers.forEach(function(name) {
+            var count = toolsPerServer[name] || '—';
+            html += '<tr style="border-bottom:1px solid var(--border);">' +
+                '<td style="padding:8px 12px;font-family:var(--font-mono);font-weight:500;">' + name + '</td>' +
+                '<td style="padding:8px 12px;"><span style="color:var(--success);">&#9679;</span> Healthy</td>' +
+                '<td style="padding:8px 12px;text-align:right;font-family:var(--font-mono);">' + count + '</td>' +
+                '</tr>';
+        });
+        html += '</tbody></table>' +
+            '<div style="margin-top:8px;font-size:12px;color:var(--text-muted);">' +
+            servers.length + ' server(s) &middot; ' + totalTools + ' total tools</div>';
+        container.innerHTML = html;
+    }
+
+    // Polling (fallback)
+    function startPolling() {
+        if (pollTimer) clearInterval(pollTimer);
+        pollTimer = setInterval(function() {
+            if (!wsConnected) fetchStatus();
+            fetchHealth();
+            fetchAuditEvents();
+        }, POLL_INTERVAL);
+    }
+
+    function fetchHealth() {
+        fetch('/api/health-status')
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+            if (d.cpu_percentage !== undefined) setText('kv-cpu', d.cpu_percentage.toFixed(1) + '%');
+            if (d.memory_usage_mb !== undefined) setText('kv-memory', d.memory_usage_mb.toFixed(0) + ' MB');
+            setText('kv-heartbeat', d.last_report ? timeAgo(d.last_report) : '—');
+        })
+        .catch(function() {});
+    }
+
+    var recentEvents = [];
+    function fetchAuditEvents() {
+        fetch('/api/audit/events?limit=10')
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+            if (d.events && d.events.length > 0) {
+                recentEvents = d.events.slice(0, 10);
+                renderEvents();
+            }
+        })
+        .catch(function() {});
+    }
+
+    function renderEvents() {
+        var container = document.getElementById('event-list');
+        if (!recentEvents.length) {
+            container.innerHTML = '<p class="empty-state">No events yet</p>';
+            return;
+        }
+        container.innerHTML = recentEvents.map(function(ev) {
+            var time = new Date(ev.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            var sev = (ev.severity || 'info').toLowerCase();
+            var msg = ev.message || ev.description || ev.event_type || '—';
+            return '<div class="event-item">' +
+                '<span class="event-time">' + time + '</span>' +
+                '<span class="event-severity ' + sev + '">' + sev + '</span>' +
+                '<span class="event-message">' + msg + '</span>' +
+                '</div>';
+        }).join('');
+    }
+
+    // WebSocket (primary channel)
+    function connectWebSocket() {
+        if (ws) return;
+        var protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+        var url = protocol + '//' + location.host + '/ws';
+        try {
+            ws = new WebSocket(url);
+            ws.onopen = function() {
+                wsConnected = true;
+                document.getElementById('ws-dot').className = 'ws-dot connected';
+                document.getElementById('ws-label').textContent = 'Live updates: Live';
+            };
+            ws.onclose = function() {
+                wsConnected = false;
+                ws = null;
+                document.getElementById('ws-dot').className = 'ws-dot disconnected';
+                document.getElementById('ws-label').textContent = 'Live updates: Offline';
+                setTimeout(connectWebSocket, 3000);
+            };
+            ws.onerror = function() {
+                wsConnected = false;
+            };
+            ws.onmessage = function(evt) {
+                try {
+                    var msg = JSON.parse(evt.data);
+                    if (msg.type === 'status' && msg.data) applyStatus(msg.data);
+                    if (msg.type === 'event' && msg.data) {
+                        recentEvents.unshift(msg.data);
+                        if (recentEvents.length > 10) recentEvents.pop();
+                        renderEvents();
+                    }
+                } catch (e) {}
+            };
+        } catch (e) {
+            ws = null;
+        }
+    }
+
+    // Action buttons
+    function showActionResult(msg, type) {
+        var el = document.getElementById('action-result');
+        el.textContent = msg;
+        el.className = 'action-result ' + type + ' show';
+        setTimeout(function() { el.classList.remove('show'); }, 5000);
+    }
+
+    window.checkCommands = function() {
+        fetch('/api/commands/pending')
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+            var count = d.commands ? d.commands.length : 0;
+            showActionResult(count ? count + ' pending command(s) found' : 'No pending commands', count ? 'info' : 'success');
+            if (count > 0) {
+                d.commands.forEach(function(cmd) {
+                    fetch('/api/commands/' + cmd.command_id + '/execute', { method: 'POST' }).catch(function(){});
+                });
+            }
+        })
+        .catch(function(e) { showActionResult('Failed: ' + e.message, 'error'); });
+    };
+
+    window.sendHealthReport = function() {
+        fetch('/api/health/report', { method: 'POST' })
+        .then(function(r) {
+            if (r.ok) showActionResult('Health report sent', 'success');
+            else showActionResult('Failed to send health report', 'error');
+        })
+        .catch(function(e) { showActionResult('Failed: ' + e.message, 'error'); });
+    };
+
+    window.syncPolicies = function() {
+        showActionResult('Syncing policies...', 'info');
+        fetch('/api/policies/fetch', { method: 'POST' })
+        .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
+        .then(function(res) {
+            if (res.ok) {
+                var count = res.data.policies ? res.data.policies.length : 0;
+                showActionResult('Synced ' + count + ' policies', 'success');
+                setText('kv-policy-count', count + ' loaded');
+                setText('kv-policy-last-sync', 'just now');
+                setText('kv-policy-sync', 'Success');
+                document.getElementById('kv-policy-sync').classList.add('success');
+                // Refetch status so Policy Enforcement "Last sync" updates when backend reflects it
+                setTimeout(fetchStatus, 1500);
+                setTimeout(fetchStatus, 4000);
+            } else {
+                showActionResult('Sync failed: ' + (res.data.error || 'Unknown'), 'error');
+            }
+        })
+        .catch(function(e) { showActionResult('Failed: ' + e.message, 'error'); });
+    };
+
+    window.forceReconnect = function() {
+        showActionResult('Reconnect initiated...', 'info');
+        fetch('/api/reconnect', { method: 'POST' })
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+            if (d.status === 'reconnect_initiated') {
+                showActionResult('Reconnect triggered — syncing with control plane', 'success');
+                setTimeout(fetchStatus, 3000);
+            } else {
+                showActionResult('Reconnect failed: ' + (d.error || 'Unknown'), 'error');
+            }
+        })
+        .catch(function(e) { showActionResult('Failed: ' + e.message, 'error'); });
+    };
+
+    window.reloadMcpConfig = function() {
+        showActionResult('Reloading MCP config...', 'info');
+        fetch('/api/mcp/reload', { method: 'POST' })
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+            if (d.status === 'reloaded') {
+                showActionResult('MCP config reloaded successfully', 'success');
+                setTimeout(fetchStatus, 2000);
+            } else {
+                showActionResult('MCP reload failed: ' + (d.error || 'Unknown'), 'error');
+            }
+        })
+        .catch(function(e) { showActionResult('Failed: ' + e.message, 'error'); });
+    };
+
+    window.rotateCertificate = function() {
+        showActionResult('Requesting certificate renewal...', 'info');
+        fetch('/api/certificates/renew', { method: 'POST' })
+        .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
+        .then(function(res) {
+            if (res.ok && res.data.status === 'renewed') {
+                var expiry = res.data.expires_at ? new Date(res.data.expires_at).toLocaleDateString() : 'unknown';
+                showActionResult('Certificate renewed — expires ' + expiry, 'success');
+                fetchStatus();
+                setTimeout(fetchStatus, 2000);
+                setTimeout(fetchStatus, 5000);
+            } else {
+                showActionResult('Certificate renewal failed: ' + (res.data.error || 'Unknown'), 'error');
+            }
+        })
+        .catch(function(e) { showActionResult('Failed: ' + e.message, 'error'); });
+    };
+
+    // Init: ask server what state we're in
+    fetch('/api/status')
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+        if (data.connected && data.runtime_id) {
+            state.connected = true;
+            state.runtimeId = data.runtime_id;
+            setView('connected');
+            applyStatus(data);
+            startPolling();
+            connectWebSocket();
+            fetchHealth();
+            fetchAuditEvents();
+        } else {
+            setView('unprovisioned');
+        }
+    })
+    .catch(function() {
+        setView('unprovisioned');
+    });
+})();
+</script>
+</body>
+</html>

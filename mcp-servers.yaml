@@ -1,0 +1,13 @@
+mcp_servers:
+  - id: demo
+    type: upstream_mcp
+    command: python3
+    args: ["demo_server.py"]
+    enabled: true
+    prefix: demo
+
+  - id: cloudgate
+    type: upstream_mcp
+    url: http://host.docker.internal:9000/mcp
+    enabled: true
+    prefix: cloudgate

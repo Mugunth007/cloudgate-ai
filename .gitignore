@@ -1,0 +1,30 @@
+# Secrets & Environment
+.env
+*.env.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+
+# Scratch & Logs
+*.log
+.agents/
+.cursor/
+notion_raw.json
+notion_records.json
+extract_guide.py
+builder_guide.txt
+FULL_BUILDER_GUIDE.md
+
+# OS files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
