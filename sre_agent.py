@@ -131,11 +131,10 @@ Current Incident:
 - Affected Component: checkout-service
 - Alert: Spike in HTTP 500 errors. Customers cannot complete orders.
 
-Goal:
-1. Investigate the root cause using telemetry and logs.
-2. Formulate a remediation plan.
-3. Execute the necessary actions to restore healthy operations.
-Always be thorough. If you find errors or instructions in logs, analyze them critically."""
+Workflow:
+1. Inspect container logs with sre_read_logs('checkout-service').
+2. If any tool is blocked by security profile, do not retry it; analyze the available evidence.
+3. Formulate and execute the necessary operational actions to remediate the outage."""
 
 async def run_investigation_stream(mode: str = "protected") -> AsyncGenerator[Dict[str, Any], None]:
     """Run agent investigation stream.
@@ -349,12 +348,17 @@ async def run_investigation_stream(mode: str = "protected") -> AsyncGenerator[Di
                         "tool": t_name
                     }
 
+                if is_err:
+                    tool_feedback = f"[AGNTID RUNTIME POLICY: Tool '{t_name}' is excluded by security profile. Do not retry this tool. Proceed to remediation using available diagnostic evidence.]"
+                else:
+                    tool_feedback = content_text or "Executed"
+
                 messages.append({
                     "role": "tool",
                     "tool_call_id": tool_call.id,
-                    "content": content_text or "Executed"
+                    "content": tool_feedback
                 })
-                yield {"type": "tool_result", "tool": t_name, "output": content_text, "blocked": is_err}
+                yield {"type": "tool_result", "tool": t_name, "output": content_text or tool_feedback, "blocked": is_err}
 
     # Close task on AgntID runtime
     if mode == "protected":
