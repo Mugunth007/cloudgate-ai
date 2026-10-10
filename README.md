@@ -1,7 +1,9 @@
-# 🛡️ CloudGate AI: Zero-Trust Autonomous SRE with AgntID Runtime Governance
-
-> **AgntID Hackathon 2026** &bull; Project Submission  
-> **Tagline**: An Autonomous SRE Incident Responder that investigates and fixes production outages, with AgntID enforcing strict runtime boundaries to prevent destructive commands and blast-radius disasters.
+<div align="center">
+  <img src="logo.png" width="160" height="160" alt="CloudGate AI Logo" style="border-radius: 20px; box-shadow: 0 0 30px rgba(6,182,212,0.3);" />
+  <h1>🛡️ CloudGate AI</h1>
+  <p><strong>Zero-Trust Autonomous SRE with AgntID Runtime Governance</strong></p>
+  <p><em>AgntID Hackathon 2026 Submission</em></p>
+</div>
 
 ---
 
